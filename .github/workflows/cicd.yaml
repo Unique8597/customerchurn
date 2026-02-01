@@ -1,0 +1,43 @@
+name: Deploy Azure Resources and Function
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      TENANT_ID: ${{ secrets.TENANT_ID }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+      LOCATION: ${{ secrets.LOCATION }}
+      EVENTHUB_NAMESPACE: ${{ secrets.EVENTHUB_NAMESPACE }}   # same value
+      EVENT_HUB: ${{ secrets.EVENTHUB }}
+      FUNCTION_APP_NAME: ${{ secrets.FUNCTION_APP_NAME }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install requirements
+        run: sudo apt-get update
+
+      - name: Install Python dependencies
+        run: make install
+
+      - name: Login with service principal
+        run: make login
+
+      - name: Create resource group if not exists
+        run: make rg
+
+      - name: Create Event Hub namespace
+        run: make eh-namespace
+
+      - name: Create Event Hub
+        run: make eh-create
