@@ -17,8 +17,7 @@ jobs:
       RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
       LOCATION: ${{ secrets.LOCATION }}
       EVENTHUB_NAMESPACE: ${{ secrets.EVENTHUB_NAMESPACE }}   # same value
-      EVENT_HUB: ${{ secrets.EVENTHUB }}
-      FUNCTION_APP_NAME: ${{ secrets.FUNCTION_APP_NAME }}
+      EVENTHUB: ${{ secrets.EVENTHUB }}
 
     steps:
       - name: Checkout code

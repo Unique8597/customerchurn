@@ -20,11 +20,11 @@ eh-namespace:
 	fi
 
 eh-create:
-	@if ! az eventhubs eventhub show --name $(EVENT_HUB) --namespace-name $(EVENTHUB_NAMESPACE) --resource-group $(RESOURCE_GROUP) >/dev/null 2>&1; then \
-		echo "Creating Event Hub $(EVENT_HUB)..."; \
-		az eventhubs eventhub create --name $(EVENT_HUB) --namespace-name $(EVENTHUB_NAMESPACE) --resource-group $(RESOURCE_GROUP) --partition-count 2 --message-retention 1; \
+	@if ! az eventhubs eventhub show --name $(EVENTHUB) --namespace-name $(EVENTHUB_NAMESPACE) --resource-group $(RESOURCE_GROUP) >/dev/null 2>&1; then \
+		echo "Creating Event Hub $(EVENTHUB)..."; \
+		az eventhubs eventhub create --name $(EVENTHUB) --namespace-name $(EVENTHUB_NAMESPACE) --resource-group $(RESOURCE_GROUP) --partition-count 2 --message-retention 1; \
 	else \
-		echo "Event Hub $(EVENT_HUB) already exists."; \
+		echo "Event Hub $(EVENTHUB) already exists."; \
 	fi
 
 install:
