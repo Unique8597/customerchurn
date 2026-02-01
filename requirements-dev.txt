@@ -3,4 +3,3 @@ azure-storage-blob
 pandas
 numpy
 dotenv
-azure-cli
