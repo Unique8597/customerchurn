@@ -38,7 +38,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_eventhub_namespace" "eh_namespace" {
-  name                = var.eventhub_namespace_name
+  name                = variable "eventhub_namespace_name", {}
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "Standard"
