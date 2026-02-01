@@ -38,5 +38,5 @@ jobs:
       - name: Install Python dependencies
         run: make install
 
-      - name: Login with service principal
+      - name: Login with service principa
         run: make login
