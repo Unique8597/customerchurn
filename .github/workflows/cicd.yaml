@@ -41,11 +41,15 @@ jobs:
       - name: Login with service principal
         run: make login
 
-      - name: Create resource group if not exists
-        run: make rg
-
-      - name: Create Event Hub namespace
-        run: make eh-namespace
-
-      - name: Create Event Hub
-        run: make eh-create
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.14.5
+      
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: .github/workflows
+      
+      - name: Apply Terraform configuration
+        run: terraform apply -auto-approve
+        working-directory: .github/workflows
