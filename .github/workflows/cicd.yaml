@@ -25,6 +25,10 @@ jobs:
 
       - name: Install requirements
         run: sudo apt-get update
+        
+      - name: Update Azure CLI extensions
+        run: |
+        az extension add -n eventhubs --upgrade
 
       - name: Install Python dependencies
         run: make install
