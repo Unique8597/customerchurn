@@ -3,3 +3,8 @@ azure-storage-blob
 pandas
 numpy
 dotenv
+scikit-learn
+mlflow
+xgboost
+matplotlib
+seaborn
