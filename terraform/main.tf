@@ -38,7 +38,7 @@ resource "azurerm_storage_account" "azure_storage_account" {
 }
 
 resource "azurerm_machine_learning_workspace" "ml_workspace_name" {
-  name                = var.ml_workspace
+  name                = var.ml_workspace_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   storage_account_name = azurerm_storage_account.rg.name
