@@ -3,16 +3,12 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "virtual_network_name" {
+variable "storage_account" {
   description = "The name of the virtual network"
   type        = string
 }
 
-variable "eventhub_namespace_name" {
+variable "ml_workspace_name" {
   description = "The name of the Event Hub namespace"
-  type        = string
-}
-variable "eventhub_name" {
-  description = "The name of the Event Hub"
   type        = string
 }

@@ -1,14 +1,14 @@
-# Configure the Azure provider
 terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0.2"
+      version = "~> 3.100"
     }
   }
 
-  required_version = ">= 1.1.0"
-  cloud {
+  required_version = ">= 1.3.0"
+
+  backend "remote" {
     organization = "Endowed"
     workspaces {
       name = "customerchurn"
@@ -20,41 +20,34 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "rg" {
+resource "azurerm_resource_group" "ml" {
   name     = var.resource_group_name
   location = "westus2"
 
   tags = {
     Environment = "Production"
-    Team = "ML Team"
+    Team        = "ML Team"
   }
 }
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = var.virtual_network_name
-  address_space       = ["10.0.0.0/16"]
-  location            = "westus2"
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_storage_account" "ml" {
+  name                     = var.storage_account
+  resource_group_name      = azurerm_resource_group.ml.name
+  location                 = azurerm_resource_group.ml.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }
 
-resource "azurerm_eventhub_namespace" "eh_namespace" {
-  name                = var.eventhub_namespace_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  sku                 = "Standard"
-  capacity            = 2
+resource "azurerm_machine_learning_workspace" "ml_workspace" {
+  name                = var.ml_workspace_name
+  location            = azurerm_resource_group.ml.location
+  resource_group_name = azurerm_resource_group.ml.name
+  storage_account_name = azurerm_storage_account.ml.name
+
+  sku_name = "Basic"
 
   tags = {
     Environment = "Production"
-    Team = "ML Team"
+    Team        = "ML Team"
   }
-  
-}
-
-resource "azurerm_eventhub" "eventhub" {
-  name                = var.eventhub_name
-  namespace_name      = azurerm_eventhub_namespace.eh_namespace.name
-  resource_group_name = azurerm_resource_group.rg.name
-  partition_count     = 2
-  message_retention   = 1
 }
