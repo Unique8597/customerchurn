@@ -3,12 +3,12 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "storage_account" {
-  description = "The name of the virtual network"
+variable "azure_storage_account" {
+  description = "The name of the azure storage account"
   type        = string
 }
 
 variable "ml_workspace_name" {
-  description = "The name of the Event Hub namespace"
+  description = "The name of the ML workspace"
   type        = string
 }
