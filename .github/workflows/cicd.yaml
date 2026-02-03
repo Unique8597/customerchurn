@@ -48,8 +48,8 @@ jobs:
       - name: Run Prepare Step
         id: prepare
         run: |
-          DATA_URI=$(python src/data/prepare_data.py)
-          echo "data_uri=$DATA_URI" >> $GITHUB_OUTPUT
+          python src/data/prepare_data.py
+  
 
       # -----------------------------------------------------
       #               PREPROCESS STEP
@@ -57,4 +57,4 @@ jobs:
       - name: Run Preprocess Step
         id: preprocess
         run: |
-          python src/data/preprocess.py --input-path "${{ steps.prepare.outputs.data_uri }}"
+          python src/data/preprocess.py

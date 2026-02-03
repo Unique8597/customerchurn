@@ -26,6 +26,10 @@ from sklearn.pipeline import Pipeline
 import joblib
 from storage_utils import get_blob_service_client
 
+account_name = os.getenv("AZURE_STORAGE_ACCOUNT_NAME")
+container_name = "training-data"
+blob_name = "customer_churn.csv"
+
 
 def download_blob_to_memory(blob_url: str):
     """
@@ -141,16 +145,11 @@ def save_artifacts(X_train, X_test, y_train, y_test, preprocessor, output_dir="a
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--input-path", type=str, required=True, help="Path to CSV data"
-    )
-    args = parser.parse_args()
-
+    input_path = f"https://{account_name}.blob.core.windows.net/{container_name}/{blob_name}"
 
     TARGET = ["Churn","CustomerID"]  # Change if your target column differs
 
-    df = download_blob_to_memory(args.input_path)
+    df = download_blob_to_memory(input_path)
     df = clean_data(df)
 
     X_train, X_test, y_train, y_test, preprocessor = preprocess_and_split(df, TARGET)
