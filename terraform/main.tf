@@ -66,6 +66,9 @@ resource "azurerm_machine_learning_workspace" "ml_workspace" {
 
   sku_name = "Basic"
 
+  identity {
+  type = "SystemAssigned"
+}
   tags = {
     Environment = "Production"
     Team        = "ML Team"
