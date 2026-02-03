@@ -8,6 +8,11 @@ Compatible with Azure ML workspace storage.
 import os
 from azure.identity import ClientSecretCredential
 from azure.storage.blob import BlobServiceClient
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
+
 
 def get_blob_service_client():
     """
@@ -33,7 +38,7 @@ def get_blob_service_client():
     )
 
     blob_service_client = BlobServiceClient(
-        account_url=f"https://{account_name}.blob.core.windows.net",
+        account_url=f"https://animeridw98232.blob.core.windows.net",
         credential=credential
     )
 

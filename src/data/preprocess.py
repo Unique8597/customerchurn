@@ -11,33 +11,51 @@ Preprocessing script for Customer Churn Prediction.
 
 Author: EmadFS
 """
-
+from io import BytesIO
+from urllib.parse import urlparse
+import argparse
+from email import parser
+from html import parser
 import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 import joblib
-from storage_utils import upload_if_not_exists, get_blob_uri
-
-container = "customer-data"
-local_csv = "data/customer_churn.csv"
-blob_name = "customer_churn.csv"
-
-# Upload only if not present
-upload_if_not_exists(container, local_csv, blob_name)
-
-# Get the URI for Azure ML job
-data_uri = get_blob_uri(container, blob_name)
-print(f"Data available at: {data_uri}")
+from storage_utils import get_blob_service_client
 
 
-def load_data(data_path: str) -> pd.DataFrame:
-    """Load raw CSV data."""
-    print(f"Loading dataset from: {data_path}")
-    return pd.read_csv(data_path)
+def download_blob_to_memory(blob_url: str):
+    """
+    Downloads a CSV blob from Azure Storage into memory and returns a pandas DataFrame.
+
+    Args:
+        blob_service_client: Azure BlobServiceClient instance
+        blob_url: full blob URI, e.g.
+                  https://<account>.blob.core.windows.net/<container>/<blob_name>
+    Returns:
+        pandas DataFrame
+    """
+    # Parse the blob URL
+    parsed = urlparse(blob_url)
+    container_name = parsed.path.split("/")[1]
+    blob_name = "/".join(parsed.path.split("/")[2:])
+
+    # Create a BlobClient using the BlobServiceClient
+    blob_service_client = get_blob_service_client()
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+
+    # Download blob into memory
+    stream = BytesIO()
+    data = blob_client.download_blob()
+    data.readinto(stream)
+    stream.seek(0)
+
+    # Read CSV into pandas
+    df = pd.read_csv(stream)
+    return df
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -75,7 +93,7 @@ def build_preprocessor(df: pd.DataFrame, target_columns: list[str]):
 
     categorical_transformer = Pipeline(
         steps=[
-            ("encoder", LabelEncoder(handle_unknown="ignore"))
+            ("encoder", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1))
         ]
     )
 
@@ -89,12 +107,12 @@ def build_preprocessor(df: pd.DataFrame, target_columns: list[str]):
     return preprocessor
 
 
-def preprocess_and_split(df: pd.DataFrame, target_column: list[str]):
+def preprocess_and_split(df: pd.DataFrame, target_columns: list):
     """Prepare dataset and return train/test splits and preprocessor."""
 
-    y = df[target_column]
-    X = df.drop(columns=target_column)
-    preprocessor = build_preprocessor(df, target_column)
+    y = df[target_columns[0]]
+    X = df.drop(columns=target_columns)
+    preprocessor = build_preprocessor(df, target_columns)
 
     X_processed = preprocessor.fit_transform(X)
 
@@ -122,10 +140,16 @@ def save_artifacts(X_train, X_test, y_train, y_test, preprocessor, output_dir="a
 
 
 def main():
-    RAW_DATA_PATH = os.getenv("DATA_PATH", "data/customer_churn.csv")
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--input-path", type=str, required=True, help="Path to CSV data"
+    )
+    args = parser.parse_args()
+
+
     TARGET = ["Churn","CustomerID"]  # Change if your target column differs
 
-    df = load_data(RAW_DATA_PATH)
+    df = download_blob_to_memory(args.input_path)
     df = clean_data(df)
 
     X_train, X_test, y_train, y_test, preprocessor = preprocess_and_split(df, TARGET)

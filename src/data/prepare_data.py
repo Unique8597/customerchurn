@@ -10,3 +10,4 @@ upload_if_not_exists(container, local_csv, blob_name)
 
 # Get the blob URI
 data_uri = get_blob_uri(container, blob_name)
+print(f"Data available at: {data_uri}")

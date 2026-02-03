@@ -16,8 +16,7 @@ jobs:
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
       RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
       LOCATION: ${{ secrets.LOCATION }}
-      EVENTHUB_NAMESPACE: ${{ secrets.EVENTHUB_NAMESPACE }}   # same value
-      EVENTHUB: ${{ secrets.EVENTHUB }}
+      AML_WORKSPACE: ${{ secrets.AML_WORKSPACE }}
 
     steps:
       - name: Checkout code
@@ -26,7 +25,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install Azure CLI
         run: |
@@ -40,3 +39,21 @@ jobs:
 
       - name: Login with service principal
         run: make login
+
+      # -----------------------------------------------------
+      #               PREPARE STEP
+      # -----------------------------------------------------
+
+      - name: Run Prepare Step
+        id: prepare
+        run: |
+          DATA_URI=$(python src/data/prepare_data.py)
+          echo "data_uri=$DATA_URI" >> $GITHUB_OUTPUT
+
+      # -----------------------------------------------------
+      #               PREPROCESS STEP
+      # -----------------------------------------------------
+      - name: Run Preprocess Step
+        id: preprocess
+        run: |
+          python src/data/preprocess.py --input-path "${{ steps.prepare.outputs.data_uri }}"

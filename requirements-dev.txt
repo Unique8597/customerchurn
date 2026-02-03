@@ -10,3 +10,4 @@ matplotlib
 seaborn
 azure-identity
 azure-storage-blob
+azure-cli
