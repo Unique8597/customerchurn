@@ -39,6 +39,7 @@ def download_blob_to_memory(blob_url: str):
         pandas DataFrame
     """
     # Parse the blob URL
+    print(f"Downloading data from: {blob_url}")
     parsed = urlparse(blob_url)
     container_name = parsed.path.split("/")[1]
     blob_name = "/".join(parsed.path.split("/")[2:])

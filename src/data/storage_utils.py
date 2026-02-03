@@ -8,10 +8,6 @@ Compatible with Azure ML workspace storage.
 import os
 from azure.identity import ClientSecretCredential
 from azure.storage.blob import BlobServiceClient
-from dotenv import load_dotenv
-
-load_dotenv(".env")
-
 
 
 def get_blob_service_client():
