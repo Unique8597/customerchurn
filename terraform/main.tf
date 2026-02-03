@@ -19,7 +19,7 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "ml" {
+resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = "westus2"
 
@@ -29,19 +29,19 @@ resource "azurerm_resource_group" "ml" {
   }
 }
 
-resource "azurerm_storage_account" "ml" {
+resource "azurerm_storage_account" "rg" {
   name                     = var.azure_storage_account
-  resource_group_name      = azurerm_resource_group.ml.name
-  location                 = azurerm_resource_group.ml.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
 resource "ml_workspace" "ml_workspace" {
   name                = var.ml_workspace_name
-  location            = azurerm_resource_group.ml.location
-  resource_group_name = azurerm_resource_group.ml.name
-  storage_account_name = azurerm_storage_account.ml.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  storage_account_name = azurerm_storage_account.rg.name
 
   sku_name = "Basic"
 
