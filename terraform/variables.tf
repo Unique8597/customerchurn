@@ -12,3 +12,8 @@ variable "ml_workspace_name" {
   description = "The name of the ML workspace"
   type        = string
 }
+
+variable "azure_key_vault" {
+  description = "The name of the Azure Key Vault"
+  type        = string
+}
