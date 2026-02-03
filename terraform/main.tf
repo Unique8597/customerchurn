@@ -37,7 +37,7 @@ resource "azurerm_storage_account" "rg" {
   account_replication_type = "LRS"
 }
 
-resource "ml_workspace_name" "ml_workspace" {
+resource "azurerm_machine_learning_workspace" "ml_workspace" {
   name                = var.ml_workspace_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
