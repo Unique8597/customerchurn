@@ -23,10 +23,10 @@ def get_blob_service_client():
         AZURE_CLIENT_SECRET
         AZURE_STORAGE_ACCOUNT_NAME
     """
-    tenant_id = os.getenv("TENANT_ID")
-    client_id = os.getenv("CLIENT_ID")
-    client_secret = os.getenv("CLIENT_SECRET")
-    account_name = os.getenv("AZURE_STORAGE_ACCOUNT_NAME")
+    tenant_id = os.environ("TENANT_ID")
+    client_id = os.environ("CLIENT_ID")
+    client_secret = os.environ("CLIENT_SECRET")
+    account_name = os.environ("AZURE_STORAGE_ACCOUNT_NAME")
 
     if not all([tenant_id, client_id, client_secret, account_name]):
         raise ValueError("AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_STORAGE_ACCOUNT_NAME must be set")
@@ -38,7 +38,7 @@ def get_blob_service_client():
     )
 
     blob_service_client = BlobServiceClient(
-        account_url=f"https://animeridw98232.blob.core.windows.net",
+        account_url=f"https://{account_name}.blob.core.windows.net",
         credential=credential
     )
 
