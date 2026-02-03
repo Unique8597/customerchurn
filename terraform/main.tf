@@ -31,14 +31,14 @@ resource "azurerm_resource_group" "ml" {
 }
 
 resource "azurerm_storage_account" "ml" {
-  name                     = var.storage_account
+  name                     = var.azure_storage_account
   resource_group_name      = azurerm_resource_group.ml.name
   location                 = azurerm_resource_group.ml.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
-resource "azurerm_machine_learning_workspace" "ml_workspace" {
+resource "ml_workspace" "ml_workspace" {
   name                = var.ml_workspace_name
   location            = azurerm_resource_group.ml.location
   resource_group_name = azurerm_resource_group.ml.name
