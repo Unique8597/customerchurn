@@ -29,7 +29,7 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
-resource "azurerm_storage_account" "rg" {
+resource "azurerm_storage_account" "azure_storage_account" {
   name                     = var.azure_storage_account
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
@@ -37,7 +37,7 @@ resource "azurerm_storage_account" "rg" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_machine_learning_workspace" "ml_workspace" {
+resource "azurerm_machine_learning_workspace" "ml_workspace_name" {
   name                = var.ml_workspace
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
