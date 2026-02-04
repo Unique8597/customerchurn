@@ -11,7 +11,7 @@ code: ../src
 # ---------------------------
 environment:
   name: customer-churn-env
-  conda_file: conda.yml
+  conda_file: conda.yaml
 
 # ---------------------------
 # Compute target

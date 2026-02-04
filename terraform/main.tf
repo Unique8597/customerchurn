@@ -57,6 +57,12 @@ resource "azurerm_application_insights" "ml_ai" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
+
+  lifecycle {
+    ignore_changes = [
+      application_type
+    ]
+  }
 }
 
 resource "azurerm_machine_learning_workspace" "ml_workspace" {
