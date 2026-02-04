@@ -15,12 +15,12 @@ environment: azureml://registries/azureml/environments/sklearn-1.5/labels/latest
 # Compute target
 # ---------------------------
 compute: cpu-cluster
+resources.instance_count: 3
 
 # ---------------------------
 # Command to run
 # ---------------------------
-command: >
-  python model/train.py
+command: python model/train.py
 
 # ---------------------------
 # Outputs
