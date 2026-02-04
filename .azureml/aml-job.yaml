@@ -10,6 +10,18 @@ code: ../src
 # Environment (Python + dependencies)
 # ---------------------------
 environment: azureml:AzureML-sklearn-1.5:39
+
+environment_variables:
+  AZURE_STORAGE_CONTAINER_NAME: $AZURE_STORAGE_CONTAINER_NAME
+  AZURE_STORAGE_BLOB_NAME: $AZURE_STORAGE_BLOB_NAME
+  CLIENT_ID: $CLIENT_ID
+  CLIENT_SECRET: $CLIENT_SECRET
+  TENANT_ID: $TENANT_ID
+  SUBSCRIPTION_ID: $SUBSCRIPTION_ID
+  RESOURCE_GROUP: $RESOURCE_GROUP
+  LOCATION: $LOCATION
+  AML_WORKSPACE: $AML_WORKSPACE
+
 # ---------------------------
 # Compute target
 # ---------------------------
