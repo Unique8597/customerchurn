@@ -13,7 +13,7 @@ environment:
   python:
     user_managed_dependencies: false
     interpreter_path: python
-    conda_file: conda.yml   # define your Python dependencies here
+    conda_file: conda.yaml   # define your Python dependencies here
   docker:
     enabled: true
 
@@ -21,8 +21,7 @@ environment:
 # Compute target
 # ---------------------------
 compute:
-  target: azureml:cpu-cluster   # replace with your AML compute cluster name
-  instance_count: 2
+  target: azureml:cpu-cluster # replace with your AML compute cluster name
 
 outputs:
   artifacts:
@@ -30,4 +29,4 @@ outputs:
     path: azureml://datastores/workspaceblobstore/paths/artifacts/
 
 commands:
-  - python train.py
+  - python model/train.py
