@@ -9,8 +9,12 @@ code: ../src
 # ---------------------------
 # Environment (Python + dependencies)
 # ---------------------------
-environment: azureml://registries/azureml/environments/sklearn-1.5/labels/latest
-
+environment:
+  name: customer-churn-env
+  conda_file: conda.yaml
+  docker:
+    enabled: true
+    image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:latest
 # ---------------------------
 # Compute target
 # ---------------------------
