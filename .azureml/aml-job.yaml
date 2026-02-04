@@ -6,6 +6,8 @@ display_name: "Customer Churn Training Job"
 # ---------------------------
 # Environment (Python + dependencies)
 # ---------------------------
+code: ./src
+
 environment:
   name: customer-churn-env
   python:
