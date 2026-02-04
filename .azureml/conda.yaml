@@ -17,3 +17,4 @@ dependencies:
       - azure-cli
       - azure-identity
       - azure-storage-blob
+      - azureml-mlflow

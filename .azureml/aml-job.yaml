@@ -20,6 +20,7 @@ environment_variables:
   AML_WORKSPACE: ${{ secrets.AML_WORKSPACE }}
   AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
   AZURE_STORAGE_BLOB_NAME: ${{ secrets.AZURE_STORAGE_BLOB_NAME }}
+  MLFLOW_TRACKING_URI : ${{ secrets.MLFLOW_TRACKING_URI }}
 # ---------------------------
 # Compute target
 # ---------------------------
