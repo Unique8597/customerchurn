@@ -77,4 +77,12 @@ resource "azurerm_machine_learning_workspace" "ml_workspace" {
     Environment = "Production"
     Team        = "ML Team"
   }
+
+  lifecycle { 
+    prevent_destroy = true
+    ignore_changes = [ 
+      identity,
+      tags
+     ]
+  }
 }

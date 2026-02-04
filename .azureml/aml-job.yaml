@@ -1,0 +1,31 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+name: customer-churn-training
+display_name: "Customer Churn Training Job"
+
+# ---------------------------
+# Environment (Python + dependencies)
+# ---------------------------
+environment:
+  name: customer-churn-env
+  python:
+    user_managed_dependencies: false
+    interpreter_path: python
+    conda_file: conda.yml   # define your Python dependencies here
+  docker:
+    enabled: true
+
+# ---------------------------
+# Compute target
+# ---------------------------
+compute:
+  target: azureml:cpu-cluster   # replace with your AML compute cluster name
+  instance_count: 2
+
+outputs:
+  artifacts:
+    type: uri_folder
+    path: azureml://datastores/workspaceblobstore/paths/artifacts/
+
+commands:
+  - python train.py

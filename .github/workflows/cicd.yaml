@@ -18,6 +18,8 @@ jobs:
       AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
       LOCATION: ${{ secrets.LOCATION }}
       AML_WORKSPACE: ${{ secrets.AML_WORKSPACE }}
+      AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
+      AZURE_STORAGE_BLOB_NAME: ${{ secrets.AZURE_STORAGE_BLOB_NAME }}
 
     steps:
       - name: Checkout code
@@ -58,3 +60,7 @@ jobs:
         id: preprocess
         run: |
           python src/data/preprocess.py
+
+      - name: Train on Azure ML
+        run: |
+          az ml job create --file .azureml/aml-job.yaml --web

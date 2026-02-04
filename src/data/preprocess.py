@@ -12,13 +12,12 @@ Preprocessing script for Customer Churn Prediction.
 Author: EmadFS
 """
 from io import BytesIO
+import io
 from urllib.parse import urlparse
-import argparse
-from email import parser
-from html import parser
 import os
 import pandas as pd
 import numpy as np
+from scipy import io
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
@@ -26,30 +25,19 @@ from sklearn.pipeline import Pipeline
 import joblib
 from storage_utils import get_blob_service_client
 
-account_name = os.getenv("AZURE_STORAGE_ACCOUNT_NAME")
-container_name = "training-data"
-blob_name = "customer_churn.csv"
+container_name = os.getenv("AZURE_STORAGE_CONTAINER_NAME")
+blob_name = os.getenv("AZURE_STORAGE_BLOB_NAME")
+prefix = os.getenv("ARTIFACTS_BLOB_PREFIX", "preprocess-artifacts")
+
+blob_service_client = get_blob_service_client()
 
 
-def download_blob_to_memory(blob_url: str):
+def download_blob_to_memory():
     """
-    Downloads a CSV blob from Azure Storage into memory and returns a pandas DataFrame.
-
-    Args:
-        blob_service_client: Azure BlobServiceClient instance
-        blob_url: full blob URI, e.g.
-                  https://<account>.blob.core.windows.net/<container>/<blob_name>
-    Returns:
-        pandas DataFrame
+    Downloads a blob from Azure Blob Storage into memory as a pandas DataFrame.
     """
-    # Parse the blob URL
-    print(f"Downloading data from: {blob_url}")
-    parsed = urlparse(blob_url)
-    container_name = parsed.path.split("/")[1]
-    blob_name = "/".join(parsed.path.split("/")[2:])
 
     # Create a BlobClient using the BlobServiceClient
-    blob_service_client = get_blob_service_client()
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
 
     # Download blob into memory
@@ -129,27 +117,50 @@ def preprocess_and_split(df: pd.DataFrame, target_columns: list):
 
     return X_train, X_test, y_train, y_test, preprocessor
 
+def upload_bytes_to_blob(blob_client, data_bytes: bytes):
+    blob_client.upload_blob(data_bytes, overwrite=True)
 
-def save_artifacts(X_train, X_test, y_train, y_test, preprocessor, output_dir="artifacts"):
-    """Save processed datasets and preprocessing pipeline."""
 
-    os.makedirs(output_dir, exist_ok=True)
+# ------------------------------- #
+#   SAVE ARTIFACTS TO BLOB
+# ------------------------------- #
 
-    joblib.dump(preprocessor, os.path.join(output_dir, "preprocessor.joblib"))
-    np.save(os.path.join(output_dir, "X_train.npy"), X_train)
-    np.save(os.path.join(output_dir, "X_test.npy"), X_test)
-    np.save(os.path.join(output_dir, "y_train.npy"), y_train)
-    np.save(os.path.join(output_dir, "y_test.npy"), y_test)
+def save_artifacts(X_train, X_test, y_train, y_test, preprocessor):
 
-    print("Artifacts saved successfully.")
+    container_client = blob_service_client.get_container_client(container_name)
+
+    # ---- Save preprocessor ---- #
+    preproc_buffer = BytesIO()
+    joblib.dump(preprocessor, preproc_buffer)
+    upload_bytes_to_blob(
+        container_client.get_blob_client(f"{prefix}/preprocessor.joblib"),
+        preproc_buffer.getvalue()
+    )
+
+    # ---- Save arrays ---- #
+    files = {
+        "X_train.npy": X_train,
+        "X_test.npy": X_test,
+        "y_train.npy": y_train,
+        "y_test.npy": y_test,
+    }
+
+    for name, array in files.items():
+        buf = BytesIO()
+        np.save(buf, array)
+        upload_bytes_to_blob(
+            container_client.get_blob_client(f"{prefix}/{name}"),
+            buf.getvalue()
+        )
+
+    print("✔ Artifacts successfully uploaded to Blob Storage.")
 
 
 def main():
-    input_path = f"https://{account_name}.blob.core.windows.net/{container_name}/{blob_name}"
 
     TARGET = ["Churn","CustomerID"]  # Change if your target column differs
 
-    df = download_blob_to_memory(input_path)
+    df = download_blob_to_memory()
     df = clean_data(df)
 
     X_train, X_test, y_train, y_test, preprocessor = preprocess_and_split(df, TARGET)

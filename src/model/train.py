@@ -15,19 +15,27 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score, roc
 import joblib
 import mlflow
 import mlflow.sklearn
+from utils import load_blob_numpy, load_blob_joblib
+
+prefix = os.getenv("AZURE_OUTPUT_PREFIX", "preprocess-output")
 
 
-def load_data(artifacts_dir="artifacts"):
-    """Load preprocessed train/test data and preprocessor."""
-    X_train = np.load(os.path.join(artifacts_dir, "X_train.npy"), allow_pickle=True)
-    X_test = np.load(os.path.join(artifacts_dir, "X_test.npy"), allow_pickle=True)
-    y_train = np.load(os.path.join(artifacts_dir, "y_train.npy"), allow_pickle=True)
-    y_test = np.load(os.path.join(artifacts_dir, "y_test.npy"), allow_pickle=True)
+def load_data_from_blob():
+    """
+    Loads preprocessed datasets and preprocessor directly from Azure Blob Storage.
+    """
+    print("Downloading training artifacts from Azure Blob...")
 
-    preprocessor = joblib.load(os.path.join(artifacts_dir, "preprocessor.joblib"))
+    X_train = load_blob_numpy(f"{prefix}/X_train.npy")
+    X_test = load_blob_numpy(f"{prefix}/X_test.npy")
+    y_train = load_blob_numpy(f"{prefix}/y_train.npy")
+    y_test = load_blob_numpy(f"{prefix}/y_test.npy")
+
+    preprocessor = load_blob_joblib(f"{prefix}/preprocessor.joblib")
+
+    print("✔ All artifacts loaded from blob.")
 
     return X_train, X_test, y_train, y_test, preprocessor
-
 
 def train_model(X_train, y_train, learning_rate=0.1, max_depth=10, n_estimators=150):
     """Train GradientBoostingClassifier with MLflow autolog enabled."""
