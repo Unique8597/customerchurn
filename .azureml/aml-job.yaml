@@ -3,30 +3,34 @@ type: command
 name: customer-churn-training
 display_name: "Customer Churn Training Job"
 
+# Directory containing train.py and dependencies
+code: ../src
+
 # ---------------------------
 # Environment (Python + dependencies)
 # ---------------------------
-code: ./src
-
 environment:
   name: customer-churn-env
-  python:
-    user_managed_dependencies: false
-    interpreter_path: python
-    conda_file: conda.yaml   # define your Python dependencies here
+  conda_file: conda.yml
   docker:
     enabled: true
 
 # ---------------------------
 # Compute target
 # ---------------------------
-compute:
-  target: azureml:cpu-cluster # replace with your AML compute cluster name
+compute: cpu-cluster
+instance_count: 2
 
+# ---------------------------
+# Command to run
+# ---------------------------
+command: >
+  python model/train.py
+
+# ---------------------------
+# Outputs
+# ---------------------------
 outputs:
   artifacts:
     type: uri_folder
     path: azureml://datastores/workspaceblobstore/paths/artifacts/
-
-commands:
-  - python model/train.py
