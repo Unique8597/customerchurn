@@ -137,22 +137,14 @@ def save_artifacts(X_train, X_test, y_train, y_test, preprocessor):
         preproc_buffer.getvalue()
     )
 
-    # ---- Save arrays ---- #
-    files = {
-        "X_train.npy": X_train,
-        "X_test.npy": X_test,
-        "y_train.npy": y_train,
-        "y_test.npy": y_test,
-    }
 
-    for name, array in files.items():
-        buf = BytesIO()
-        np.save(buf, array)
-        upload_bytes_to_blob(
-            container_client.get_blob_client(f"{prefix}/{name}"),
-            buf.getvalue()
-        )
+    output_dir = os.getenv("AZUREML_OUTPUT_DIR", "src/preprocessed")
+    os.makedirs(output_dir, exist_ok=True)
 
+    joblib.dump(X_train, os.path.join(output_dir, "X_train.joblib"))
+    joblib.dump(X_test, os.path.join(output_dir, "X_test.joblib"))
+    joblib.dump(y_train, os.path.join(output_dir, "y_train.joblib"))
+    joblib.dump(y_test, os.path.join(output_dir, "y_test.joblib"))
     print("✔ Artifacts successfully uploaded to Blob Storage.")
 
 

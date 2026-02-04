@@ -17,8 +17,6 @@ import mlflow
 import mlflow.sklearn
 from utils import load_blob_numpy, load_blob_joblib, blob_service_client
 
-prefix = os.getenv("AZURE_OUTPUT_PREFIX", "preprocess-output")
-
 
 def load_data_from_blob():
     """
@@ -26,16 +24,15 @@ def load_data_from_blob():
     """
     print("Downloading training artifacts from Azure Blob...")
 
-    X_train = load_blob_numpy(f"{prefix}/X_train.npy")
-    X_test = load_blob_numpy(f"{prefix}/X_test.npy")
-    y_train = load_blob_numpy(f"{prefix}/y_train.npy")
-    y_test = load_blob_numpy(f"{prefix}/y_test.npy")
+    folder = os.environ["AZUREML_INPUT_dataset"]
 
-    preprocessor = load_blob_joblib(f"{prefix}/preprocessor.joblib")
+    X_train = np.load(os.path.join(folder, "X_train.npy"))
+    y_train = np.load(os.path.join(folder, "y_train.npy"))
+    X_test  = np.load(os.path.join(folder, "X_test.npy"))
+    y_test  = np.load(os.path.join(folder, "y_test.npy"))
 
-    print("✔ All artifacts loaded from blob.")
 
-    return X_train, X_test, y_train, y_test, preprocessor
+    return X_train, X_test, y_train, y_test
 
 def train_model(X_train, y_train, learning_rate=0.1, max_depth=10, n_estimators=150):
     """Train GradientBoostingClassifier with MLflow autolog enabled."""
@@ -70,7 +67,7 @@ def main():
     # Start MLflow run (Azure ML automatically links this)
     with mlflow.start_run():
         # Load preprocessed data
-        X_train, X_test, y_train, y_test, preprocessor = load_data_from_blob()
+        X_train, X_test, y_train, y_test= load_data_from_blob()
 
         # Train model
         model = train_model(
@@ -95,8 +92,6 @@ def main():
         mlflow.log_text(clf_report, "classification_report.txt")
         mlflow.log_metric("test_roc_auc", roc)
 
-        preprocessor_path = os.path.join(artifacts_dir, "preprocessor.joblib")
-        mlflow.log_artifact(preprocessor_path)
 
         # Save model
         save_model(model, artifacts_dir)

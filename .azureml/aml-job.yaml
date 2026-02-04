@@ -25,6 +25,10 @@ environment_variables:
 # ---------------------------
 compute: cpu-cluster
 
+inputs:
+  dataset:
+    type: uri_folder
+    path: preprocessed/ 
 # ---------------------------
 # Command to run
 # ---------------------------
