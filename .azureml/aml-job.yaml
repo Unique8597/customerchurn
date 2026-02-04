@@ -9,11 +9,7 @@ code: ../src
 # ---------------------------
 # Environment (Python + dependencies)
 # ---------------------------
-environment:
-  name: customer-churn-env
-  conda_file: conda.yaml
-  docker:
-    image: mcr.microsoft.com/azureml/base:latest
+environment: azureml://registries/azureml/environments/sklearn-1.5/labels/latest
 
 # ---------------------------
 # Compute target
