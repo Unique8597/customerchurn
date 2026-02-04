@@ -15,7 +15,6 @@ environment: azureml://registries/azureml/environments/sklearn-1.5/labels/latest
 # Compute target
 # ---------------------------
 compute: cpu-cluster
-instance_count: 3
 
 # ---------------------------
 # Command to run
