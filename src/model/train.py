@@ -15,7 +15,7 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score, roc
 import joblib
 import mlflow
 import mlflow.sklearn
-from utils import load_blob_numpy, load_blob_joblib
+from utils import load_blob_numpy, load_blob_joblib, blob_service_client
 
 prefix = os.getenv("AZURE_OUTPUT_PREFIX", "preprocess-output")
 
@@ -49,23 +49,6 @@ def train_model(X_train, y_train, learning_rate=0.1, max_depth=10, n_estimators=
     return model
 
 
-def evaluate_model(model, X_test, y_test):
-    """Evaluate model performance and log metrics to MLflow."""
-    y_pred = model.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred, average='weighted')
-    clf_report = classification_report(y_test, y_pred)
-    roc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
-
-
-    # Log metric
-    mlflow.log_metric("test_accuracy", acc)
-    mlflow.log_metric("test_f1_score", f1)
-    mlflow.log_text(clf_report, "classification_report.txt")
-
-
-    return acc
-
 
 def save_model(model, artifacts_dir="artifacts"):
     """Save trained model to local artifacts and log to MLflow."""
@@ -87,11 +70,7 @@ def main():
     # Start MLflow run (Azure ML automatically links this)
     with mlflow.start_run():
         # Load preprocessed data
-        X_train, X_test, y_train, y_test, preprocessor = load_data(artifacts_dir)
-
-        # Log preprocessor as artifact
-        preprocessor_path = os.path.join(artifacts_dir, "preprocessor.joblib")
-        mlflow.log_artifact(preprocessor_path)
+        X_train, X_test, y_train, y_test, preprocessor = load_data_from_blob()
 
         # Train model
         model = train_model(
@@ -103,7 +82,21 @@ def main():
         )
 
         # Evaluate
-        evaluate_model(model, X_test, y_test)
+        y_pred = model.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred, average='weighted')
+        clf_report = classification_report(y_test, y_pred)
+        roc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
+
+
+        # Log metric
+        mlflow.log_metric("test_accuracy", acc)
+        mlflow.log_metric("test_f1_score", f1)
+        mlflow.log_text(clf_report, "classification_report.txt")
+        mlflow.log_metric("test_roc_auc", roc)
+
+        preprocessor_path = os.path.join(artifacts_dir, "preprocessor.joblib")
+        mlflow.log_artifact(preprocessor_path)
 
         # Save model
         save_model(model, artifacts_dir)

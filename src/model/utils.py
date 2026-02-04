@@ -26,8 +26,9 @@ def get_blob_service_client():
         raise ValueError(
             "TENANT_ID, CLIENT_ID, CLIENT_SECRET, AZURE_STORAGE_ACCOUNT_NAME must be set"
         )
+    print(tenant_id, client_id, account_name)
     credential = ClientSecretCredential(
-        tenant_id=tenant_id,
+        tenant_id=str(tenant_id),
         client_id=client_id,
         client_secret=client_secret
     )

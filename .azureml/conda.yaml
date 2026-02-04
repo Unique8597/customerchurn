@@ -15,3 +15,5 @@ dependencies:
       - matplotlib
       - tqdm
       - azure-cli
+      - azure-identity
+      - azure-storage-blob

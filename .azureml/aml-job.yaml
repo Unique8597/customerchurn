@@ -1,34 +1,30 @@
 $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
 type: command
-name: customer-churn-training
 display_name: "Customer Churn Training Job"
-
+experiment_name: customer-churn-experiment
 # Directory containing train.py and dependencies
 code: ../src
 
 # ---------------------------
 # Environment (Python + dependencies)
 # ---------------------------
-environment: azureml:AzureML-sklearn-1.5:39
+environment: 
+  image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:latest
+  conda_file: ../.azureml/conda.yaml
 
 environment_variables:
-  AZURE_STORAGE_CONTAINER_NAME: $AZURE_STORAGE_CONTAINER_NAME
-  AZURE_STORAGE_BLOB_NAME: $AZURE_STORAGE_BLOB_NAME
-  CLIENT_ID: $CLIENT_ID
-  CLIENT_SECRET: $CLIENT_SECRET
-  TENANT_ID: $TENANT_ID
-  SUBSCRIPTION_ID: $SUBSCRIPTION_ID
-  RESOURCE_GROUP: $RESOURCE_GROUP
-  LOCATION: $LOCATION
-  AML_WORKSPACE: $AML_WORKSPACE
-
+  TENANT_ID: ${{ secrets.TENANT_ID }}
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+  AML_WORKSPACE: ${{ secrets.AML_WORKSPACE }}
+  AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
+  AZURE_STORAGE_BLOB_NAME: ${{ secrets.AZURE_STORAGE_BLOB_NAME }}
 # ---------------------------
 # Compute target
 # ---------------------------
 compute: cpu-cluster
 
-resources:
-  instance_count: 3
 # ---------------------------
 # Command to run
 # ---------------------------
