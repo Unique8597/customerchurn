@@ -15,7 +15,6 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score, roc
 import joblib
 import mlflow
 import mlflow.sklearn
-from utils import load_blob_numpy, load_blob_joblib, blob_service_client
 
 
 def load_data_from_blob():
