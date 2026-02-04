@@ -9,13 +9,9 @@ dependencies:
       - pandas
       - scikit-learn
       - mlflow
-      - azure-storage-blob
-      - azure-identity
       - joblib
       - pyyaml
       - scipy
       - matplotlib
       - tqdm
-      - azureml-core
-      - azureml-defaults
-      - azureml-mlflow
+      - azure-cli
