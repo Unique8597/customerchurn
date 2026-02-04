@@ -24,7 +24,7 @@ def load_data_from_blob():
     """
     print("Downloading training artifacts from Azure Blob...")
 
-    folder = os.environ["AZUREML_INPUT_dataset"]
+    folder = os.environ["AZUREML_INPUT_PREPROCESSED"]
 
     X_train = np.load(os.path.join(folder, "X_train.npy"))
     y_train = np.load(os.path.join(folder, "y_train.npy"))

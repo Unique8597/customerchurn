@@ -141,10 +141,10 @@ def save_artifacts(X_train, X_test, y_train, y_test, preprocessor):
     output_dir = os.getenv("AZUREML_OUTPUT_DIR", "src/preprocessed")
     os.makedirs(output_dir, exist_ok=True)
 
-    joblib.dump(X_train, os.path.join(output_dir, "X_train.joblib"))
-    joblib.dump(X_test, os.path.join(output_dir, "X_test.joblib"))
-    joblib.dump(y_train, os.path.join(output_dir, "y_train.joblib"))
-    joblib.dump(y_test, os.path.join(output_dir, "y_test.joblib"))
+    np.save(os.path.join(output_dir, "X_train.npy"), X_train)
+    np.save(os.path.join(output_dir, "X_test.npy"), X_test)
+    np.save(os.path.join(output_dir, "y_train.npy"), y_train)
+    np.save(os.path.join(output_dir, "y_test.npy"), y_test)
     print("✔ Artifacts successfully uploaded to Blob Storage.")
 
 
