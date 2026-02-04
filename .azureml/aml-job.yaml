@@ -9,8 +9,7 @@ code: ../src
 # ---------------------------
 # Environment (Python + dependencies)
 # ---------------------------
-environment:
-  name: customer-churn-env
+environment: customer-churn-env
 # ---------------------------
 # Compute target
 # ---------------------------
