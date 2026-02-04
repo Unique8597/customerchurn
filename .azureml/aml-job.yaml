@@ -28,7 +28,7 @@ compute: cpu-cluster
 inputs:
   dataset:
     type: uri_folder
-    path: preprocessed/ 
+    path: ./src/preprocessed/ 
 # ---------------------------
 # Command to run
 # ---------------------------
