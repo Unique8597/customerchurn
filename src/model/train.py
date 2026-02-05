@@ -79,22 +79,35 @@ def main():
 
         # Evaluate
         y_pred = model.predict(X_test)
+        y_proba = model.predict_proba(X_test)[:, 1]
 
         acc = accuracy_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred, average='weighted')
-        #clf_report = classification_report(y_test, y_pred)
+        precision = precision_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred)
+        roc = roc_auc_score(y_test, y_proba)
+        logloss = log_loss(y_test, y_proba)
+        balanced_acc = balanced_accuracy_score(y_test, y_pred)
+        ap_score = average_precision_score(y_test, y_proba)
 
-        # Some churn datasets may be binary → safe roc computation
-        try:
-            roc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
-        except:
-            roc = None
+        # Confusion matrix
+        tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
 
         # Log metrics
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("f1_weighted", f1)
-        if roc is not None:
-            mlflow.log_metric("roc_auc", roc)
+        mlflow.log_metric("precision", precision)
+        mlflow.log_metric("recall", recall)
+        mlflow.log_metric("roc_auc", roc)
+        mlflow.log_metric("log_loss", logloss)
+        mlflow.log_metric("balanced_accuracy", balanced_acc)
+        mlflow.log_metric("avg_precision_score", ap_score)
+
+        # Confusion matrix metrics
+        mlflow.log_metric("true_positive", tp)
+        mlflow.log_metric("true_negative", tn)
+        mlflow.log_metric("false_positive", fp)
+        mlflow.log_metric("false_negative", fn)
 
         #mlflow.log_text(clf_report, "classification_report.txt")
 
