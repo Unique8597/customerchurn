@@ -85,7 +85,7 @@ resource "azurerm_machine_learning_workspace" "ml_workspace" {
   }
 
   lifecycle { 
-    prevent_destroy = false
+    prevent_destroy = true
     ignore_changes = [ 
       identity,
       tags,

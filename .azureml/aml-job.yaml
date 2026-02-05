@@ -35,4 +35,9 @@ inputs:
 # ---------------------------
 # Command to run
 # ---------------------------
-command: python model/train.py
+command: python model/utils.py
+
+outputs:
+  artifacts:
+    type: uri_folder
+    path: azureml://datastores/workspaceblobstore/paths/artifacts/
