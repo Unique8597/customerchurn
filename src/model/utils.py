@@ -1,10 +1,13 @@
 import mlflow
 import os
 import numpy as np
+import argparse
 
 
-folder = os.environ["AZUREML_INPUT_PREPROCESSED"]  # set by aml-job.yaml
-print(f"📥 Loading preprocessed data from: {folder}")
+parser = argparse.ArgumentParser()
+parser.add_argument("--input", type=str, required=True)
+args = parser.parse_args()  # set by aml-job.yaml
+folder = args.input
 
 X_train = np.load(os.path.join(folder, "X_train.npy"))
 y_train = np.load(os.path.join(folder, "y_train.npy"))
