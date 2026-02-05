@@ -61,9 +61,8 @@ def main():
     artifacts_dir = os.getenv("ARTIFACTS_DIR", "artifacts")
     mlflow_tracking_uri = os.environ["MLFLOW_TRACKING_URI"]
 
-    mlflow.set_experiment("customer-churn-experiment")
-
     mlflow.set_tracking_uri(mlflow_tracking_uri)
+    mlflow.set_experiment("customer-churn-experiment")
     # Enable MLflow autolog
     mlflow.sklearn.autolog()
 

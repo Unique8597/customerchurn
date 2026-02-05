@@ -74,6 +74,7 @@ jobs:
           MLFLOW_TRACKING_URI=$(az ml workspace show   --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ secrets.AML_WORKSPACE }}   --query mlflow_tracking_uri | sed 's/"//g')
           
           echo "MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI" >> $GITHUB_ENV
+          echo $MLFLOW_TRACKING_URI
 
       - name: Train on Azure ML
         run: |
