@@ -35,7 +35,7 @@ inputs:
 # ---------------------------
 # Command to run
 # ---------------------------
-command: python model/utils.py --input ${{inputs.dataset}}
+command: python model/train.py --input ${{inputs.dataset}}
 
 outputs:
   artifacts:

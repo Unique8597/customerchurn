@@ -10,13 +10,25 @@ Train GradientBoostingClassifier on preprocessed Customer Churn data.
 import os
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import accuracy_score, classification_report, f1_score, roc_auc_score
 import joblib
 import mlflow
 import mlflow.sklearn
+import argparse
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    roc_auc_score,
+    log_loss,
+    precision_score,
+    recall_score,
+    balanced_accuracy_score,
+    confusion_matrix,
+    average_precision_score
+)
 
 
-def load_data_from_input():
+
+def load_data_from_input(folder):
     """
     Loads preprocessed datasets from Azure ML input folder.
     AzureML sets env var: AZUREML_INPUT_<input_name>
@@ -60,13 +72,17 @@ def save_model(model, artifacts_dir="artifacts"):
 
 def main():
     artifacts_dir = os.getenv("ARTIFACTS_DIR", "artifacts")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=str, required=True)
+    args = parser.parse_args()  # set by aml-job.yaml
+    folder = args.input
 
     # AzureML automatically sets tracking URI + experiment
     with mlflow.start_run():
         print("🚀 MLflow run started")
 
         # Load dataset
-        X_train, X_test, y_train, y_test = load_data_from_input()
+        X_train, X_test, y_train, y_test = load_data_from_input(folder)
 
         # Train
         model = train_model(
