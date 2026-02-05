@@ -25,6 +25,8 @@ environment_variables:
 # Compute target
 # ---------------------------
 compute: cpu-cluster
+resources:
+  instance_count: 4
 
 inputs:
   dataset:
