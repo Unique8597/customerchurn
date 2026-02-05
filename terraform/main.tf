@@ -53,7 +53,7 @@ resource "azurerm_key_vault" "ml_kv" {
 }
 
 resource "azurerm_application_insights" "ml_ai" {
-  name                = "${var.ml_workspace_name}-ai"
+  name                = var.azure_app_insight
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
@@ -85,10 +85,11 @@ resource "azurerm_machine_learning_workspace" "ml_workspace" {
   }
 
   lifecycle { 
-    prevent_destroy = true
+    prevent_destroy = false
     ignore_changes = [ 
       identity,
-      tags
+      tags,
+      public_network_access_enabled
      ]
   }
 }

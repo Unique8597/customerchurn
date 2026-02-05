@@ -17,3 +17,8 @@ variable "azure_key_vault" {
   description = "The name of the Azure Key Vault"
   type        = string
 }
+
+variable "azure_app_insight" {
+  description = "Name of the Application Insight"
+  type = string
+}
