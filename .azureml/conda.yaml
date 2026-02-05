@@ -2,18 +2,14 @@ name: customer-churn-env
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
-  - ruamel.yaml=0.17.21
+  - python=3.9
   - pip
   - pip:
       - numpy
       - pandas
+      - azureml-mlflow==1.42.0
+      - mlflow-skinny==2.3.2
       - scikit-learn
-      - mlflow
       - joblib
-      - pyyaml
-      - scipy
-      - matplotlib
-      - tqdm
       - azure-cli
       - azure-identity
