@@ -34,8 +34,6 @@ def load_data_from_input(folder):
     AzureML sets env var: AZUREML_INPUT_<input_name>
     Example: AZUREML_INPUT_PREPROCESSED
     """
-
-    folder = os.environ["AZUREML_INPUT_PREPROCESSED"]  # set by aml-job.yaml
     print(f"📥 Loading preprocessed data from: {folder}")
 
     X_train = np.load(os.path.join(folder, "X_train.npy"))
