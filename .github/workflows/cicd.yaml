@@ -85,7 +85,7 @@ jobs:
           JOB_NAME=$(az ml job create \
               --file .azureml/aml-job.yaml \
               --resource-group $RESOURCE_GROUP \
-              --workspace-name $WORKSPACE \
+              --workspace-name $AML_WORKSPACE \
               --query name -o tsv)
 
           STATUS=$(az ml job show --name $JOB_NAME --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE --query status -o tsv)
