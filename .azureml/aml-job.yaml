@@ -31,13 +31,14 @@ resources:
 inputs:
   dataset:
     type: uri_folder
-    path: ../src/preprocessed/ 
-# ---------------------------
-# Command to run
-# ---------------------------
-command: python model/train.py --input ${{inputs.dataset}}
+    path: ../src/preprocessed/
+
 
 outputs:
   artifacts:
     type: uri_folder
     path: azureml://datastores/workspaceblobstore/paths/artifacts/
+# ---------------------------
+# Command to run
+# ---------------------------
+command: python model/train.py --input ${{inputs.dataset}} --output ${{outputs.artifacts}}

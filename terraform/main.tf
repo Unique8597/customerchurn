@@ -89,7 +89,8 @@ resource "azurerm_machine_learning_workspace" "ml_workspace" {
     ignore_changes = [ 
       identity,
       tags,
-      public_network_access_enabled
+      public_network_access_enabled,
+      container_registry_id
      ]
   }
 }
