@@ -78,7 +78,7 @@ jobs:
 
       - name: Train on Azure ML
         run: |
-          az ml job create --file .azureml/aml-job.yaml --resource-group $RESOURCE_GROUP--workspace-name $AML_WORKSPACE
+          az ml job create --file .azureml/aml-job.yaml --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE --web
       
       - name: Check if Job is Completed
         run: |
