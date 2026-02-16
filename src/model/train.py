@@ -57,10 +57,10 @@ def train_model(X_train, y_train, learning_rate=0.1, max_depth=10, n_estimators=
     return model
 
 
-def save_model(model, artifacts_dir="artifacts"):
+def save_model(model, output_dir):
     """Save trained model locally and log via MLflow."""
-    os.makedirs(artifacts_dir, exist_ok=True)
-    model_path = os.path.join(artifacts_dir, "model.joblib")
+    os.makedirs(output_dir, exist_ok=True)
+    model_path = os.path.join(output_dir, "model.joblib")
 
     joblib.dump(model, model_path)
     print(f"💾 Model saved to: {model_path}")
@@ -72,8 +72,10 @@ def main():
     artifacts_dir = os.getenv("ARTIFACTS_DIR", "artifacts")
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=str, required=True)
+    parser.add_argument("--output", type=str, required=True)
     args = parser.parse_args()  # set by aml-job.yaml
     folder = args.input
+    output_dir = args.output
 
     # AzureML automatically sets tracking URI + experiment
     with mlflow.start_run():
@@ -128,7 +130,7 @@ def main():
         print("📊 Metrics logged to MLflow")
 
         # Save model
-        save_model(model, artifacts_dir)
+        save_model(model, output_dir)
         print("🎉 Training pipeline finished successfully.")
 
 
