@@ -113,6 +113,7 @@ jobs:
             --version 1 \
             --type custom_model \
             --path azureml://datastores/workspaceblobstore/paths/artifacts/model.pkl \
-            --description "Model stored in workspace blobstore"
             --resource-group $RESOURCE_GROUP \
+            --description "Model stored in workspace blobstore" \
             --workspace-name $AML_WORKSPACE
+            
