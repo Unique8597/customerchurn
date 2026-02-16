@@ -112,7 +112,7 @@ jobs:
             --name customerchurnmodel \
             --version 1 \
             --type custom_model \
-            --path azureml://datastores/workspaceblobstore/paths/artifacts/model.pkl \
+            --path azureml://datastores/workspaceblobstore/paths/artifacts/model.joblib \
             --resource-group $RESOURCE_GROUP \
             --description "Model stored in workspace blobstore" \
             --workspace-name $AML_WORKSPACE
