@@ -69,12 +69,6 @@ jobs:
         run: |
           az ml compute create --name cpu-cluster --type amlcompute --min-instances 0 --max-instances 4 --size Standard_D2_v2 --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE
       
-      - name: MLFlow URI
-        run: |
-          MLFLOW_TRACKING_URI=$(az ml workspace show   --resource-group $RESOURCE_GROUP --name $AML_WORKSPACE  --query mlflow_tracking_uri | sed 's/"//g')
-          
-          echo "MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI" >> $GITHUB_ENV
-          echo $MLFLOW_TRACKING_URI
 
       - name: Train on Azure ML
         run: |
@@ -103,4 +97,10 @@ jobs:
             echo "Job did not complete successfully"
             exit 1
           fi
-   
+      - name: Delete Compute
+        run: |
+          az ml compute delete \
+            --name cpu-cluster \
+            --resource-group $RESOURCE_GROUP \
+            --workspace-name $AML_WORKSPACE \
+            --yes
