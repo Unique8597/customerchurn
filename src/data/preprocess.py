@@ -9,7 +9,7 @@ Preprocessing script for Customer Churn Prediction.
 - Creates train/test sets
 - Saves preprocessing artifacts for inference
 
-Author: EmadFS
+Author: Emmmanuel
 """
 from io import BytesIO
 import io
