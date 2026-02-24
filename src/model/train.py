@@ -26,8 +26,6 @@ from sklearn.metrics import (
     average_precision_score
 )
 
-
-
 def load_data_from_input(folder):
     """
     Loads preprocessed datasets from Azure ML input folder.
@@ -57,15 +55,15 @@ def train_model(X_train, y_train, learning_rate=0.1, max_depth=10, n_estimators=
     return model
 
 
-def save_model(model, output_dir):
-    """Save trained model locally and log via MLflow."""
-    os.makedirs(output_dir, exist_ok=True)
-    model_path = os.path.join(output_dir, "model.joblib")
+# def save_model(model, output_dir):
+#     """Save trained model locally and log via MLflow."""
+#     os.makedirs(output_dir, exist_ok=True)
+#     model_path = os.path.join(output_dir, "model.joblib")
 
-    joblib.dump(model, model_path)
-    print(f"💾 Model saved to: {model_path}")
+#     joblib.dump(model, model_path)
+#     print(f"💾 Model saved to: {model_path}")
 
-    mlflow.log_artifact(model_path)  # upload to AML run artifacts
+#     mlflow.log_artifact(model_path)  # upload to AML run artifacts
 
 
 def main():
@@ -125,12 +123,17 @@ def main():
         mlflow.log_metric("false_positive", fp)
         mlflow.log_metric("false_negative", fn)
 
+
         #mlflow.log_text(clf_report, "classification_report.txt")
 
         print("📊 Metrics logged to MLflow")
 
         # Save model
-        save_model(model, output_dir)
+        mlflow.sklearn.log_model(
+            sk_model=model,
+            artifact_path="model",
+            registered_model_name="customerchurnmodel"   # optional
+        )
         print("🎉 Training pipeline finished successfully.")
 
 
