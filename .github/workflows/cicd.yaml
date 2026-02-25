@@ -65,6 +65,10 @@ jobs:
       # -----------------------------------------------------
       #               COMPUTE & TRAINING STEP
       # -----------------------------------------------------
+      - name: Create Compute Cluster
+        run: |
+          az ml compute create --name cpu-cluster --type amlcompute --min-instances 0 --max-instances 4 --size Standard_D2_v2 --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE
+
       - name: Train Azure ML Model
         run: |
           JOB_NAME=$(az ml job create \
