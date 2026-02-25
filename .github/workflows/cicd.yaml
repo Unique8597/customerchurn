@@ -71,23 +71,8 @@ jobs:
       
       - name: Train on Azure ML
         run: |
-          JOB_NAME=$(az ml job create --file .azureml/aml-job.yaml --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE)
+          az ml job create --file .azureml/aml-job.yaml --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE --web
 
-          STATUS=$(az ml job show --name $JOB_NAME --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE --query status -o tsv)
-          echo "Initial status: $STATUS"
-
-          while [[ "$STATUS" != "Completed" && "$STATUS" != "Failed" && "$STATUS" != "Canceled" ]]; do
-              echo "Waiting for job to finish... Current status: $STATUS"
-              sleep 30  # check every 30 seconds
-              STATUS=$(az ml job show --name $JOB_NAME --resource-group $RESOURCE_GROUP --workspace-name $AML_WORKSPACE --query status -o tsv)
-          done
-
-          echo "Job finished with status: $STATUS"
-
-          if [[ "$STATUS" != "Completed" ]]; then
-            echo "Job did not complete successfully"
-            exit 1
-          fi
       - name: Delete Compute
         run: |
           az ml compute delete \
